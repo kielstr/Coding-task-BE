@@ -18,7 +18,6 @@ has dictionary => (
     }, 
 );
 
-
 has alpha_chars => ( 
 	is => 'rw', 
 	isa => sub {
@@ -69,35 +68,42 @@ sub BUILD {
 sub build_words {
 	my $self = shift;
 
+	my %words;
 	my $chars_formated = join '|', @{ $self->alpha_chars_array_ref };
 
-	my $input = $self->alpha_chars;
+	my %input_char_counts;
+	$input_char_counts{ $_ }++ for @{ $self->alpha_chars_array_ref };
 
-	# Bug here! what to do with input containing duplicate? i.e test
+	my $total_tests_passed = 0;
 
-	my $regex =qr/
-		# Input letters can only be used once each however, it seems logical 
-		# to include the word supplied if its a direct match.
+	for my $word ( grep /^($chars_formated)+$/, @{ $self->dictionary } ) {
+		for my $input_char ( @{ $self->alpha_chars_array_ref } ) {
 
-		^$input$
+			# if the charactor is not found in the current word 
+			# qualify the test and move on.
+			unless ($word =~ /$input_char/ ) {
+				$total_tests_passed++;
+				next;
+			}
 
-		|
+			# count the amount of times the charactor is found in the current word.
+			my $input_char_counts = () = $word =~ /$input_char/g;
 
-		# Only include words that contain the input chars once. 
+			# if the charactor is found the correct amount of times mark the test as pass.
+			if ($input_char_counts eq $input_char_counts{$input_char}) {
+				$total_tests_passed++
+			}
+		}
 
-		^(
-			# match any words starting with any of the in characters
-			(?'search_char'($chars_formated)) 
-			
-			# We don't want any words with the match characters repeated.
-			(?!.*(\g{search_char})) 
-		)+$
-	/x;
+		# Total tests passed must match the length of the input string.
+		if ( $total_tests_passed eq int @{ $self->alpha_chars_array_ref } ) {
+			$words{$word}++;
+		}
 
-	my @buffer = grep /$regex/, @{ $self->dictionary };
+		$total_tests_passed = 0;
+	}
 
-
-	return @buffer;
+	return keys %words;
 }
 
 1;

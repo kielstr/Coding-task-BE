@@ -23,7 +23,7 @@ $wordfinder->alpha_chars($input);
 my @matched_words = $wordfinder->build_words;
 
 if ( @matched_words ) {
-	say "Matched words: @matched_words";
+	say "Matched words:\n\t-- " . join ("\n\t-- ", @matched_words);
 } else {
 	say 'Failed to match any words to ' . $input;
 }
