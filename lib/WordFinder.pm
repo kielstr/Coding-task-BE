@@ -90,7 +90,7 @@ sub build_words {
 			my $input_char_counts = () = $word =~ /$input_char/g;
 
 			# if the charactor is found the correct amount of times mark the test as pass.
-			if ($input_char_counts eq $input_char_counts{$input_char}) {
+			if ($input_char_counts <= $input_char_counts{$input_char}) {
 				$total_tests_passed++
 			}
 		}
