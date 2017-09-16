@@ -20,7 +20,7 @@ die "usage $0: <alpha characters>"
 
 $wordfinder->alpha_chars($input);
 
-my @matched_words = $wordfinder->build_words;
+my @matched_words = $wordfinder->build_words2;
 
 if ( @matched_words ) {
 	say "Matched words:\n\t-- " . join ("\n\t-- ", @matched_words);

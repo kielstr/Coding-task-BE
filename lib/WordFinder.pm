@@ -106,4 +106,27 @@ sub build_words {
 	return keys %words;
 }
 
+sub build_words2 {
+	my $self = shift;
+
+	my %input_char_counts;
+	$input_char_counts{ $_ }++ for @{ $self->alpha_chars_array_ref };
+
+	my $chars_formated = join '|', map {'(' . $_ . '{1,' . $input_char_counts{$_} . '})' } keys %input_char_counts;
+		
+	say $chars_formated;
+
+
+	my $regex = qr /
+			^(
+				(?'search_char'($chars_formated))
+				(?!.*(\g{search_char}))
+
+			)+$
+	/x;
+
+	my @words = grep /$regex/, @{ $self->dictionary };
+	return @words;
+}
+
 1;
