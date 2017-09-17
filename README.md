@@ -4,6 +4,7 @@ FROM        perl:latest
 MAINTAINER  Kiel R Stirling kielstr@cpan.org
 
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
+
 RUN cpanm Dancer2 Starman
 RUN apt-get update && apt-get -y install wamerican
 
