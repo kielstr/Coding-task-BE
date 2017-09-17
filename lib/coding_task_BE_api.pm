@@ -1,7 +1,7 @@
 package coding_task_BE_api;
 use Dancer2;
 
-#use WordFinder;
+use WordFinder;
 #my $wordfinder = new WordFinder;
 
 our $VERSION = '0.1';

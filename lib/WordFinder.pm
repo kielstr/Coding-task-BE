@@ -8,8 +8,6 @@ use Moo;
 use Carp;
 use Data::Dumper qw(Dumper);
 
-use feature 'say';
-
 has dictionary => ( 
 	is => 'rw', 
 	isa => sub {
@@ -83,8 +81,6 @@ sub build_words {
 	my $self = shift;
 
 	my %words;
-
-	say Dumper $self->input_char_counts_href;
 
 	my $input_char_counts_href = $self->input_char_counts_href;
 
