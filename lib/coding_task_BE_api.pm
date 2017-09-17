@@ -4,8 +4,6 @@ use Dancer2;
 use WordFinder;
 my $wordfinder = new WordFinder;
 
-
-
 set serializer => 'JSON';
 
 # Web Service
