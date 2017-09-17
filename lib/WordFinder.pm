@@ -26,13 +26,22 @@ has alpha_chars => (
     }, 
 );
 
-has alpha_chars_array_ref => ( 
+has alpha_chars_aref => ( 
 	is => 'rw', 
 	isa => sub {
        confess "'$_[0]' is not an array reference!"
           if ref $_[0] ne 'ARRAY';
     }, 
 );
+
+has input_char_counts_href => ( 
+	is => 'rw', 
+	isa => sub {
+       confess "'$_[0]' is not an hash reference!"
+          if ref $_[0] ne 'HASH';
+    }, 
+);
+
 
 after alpha_chars => sub {
 	my ( $self, $alpha_chars ) = @_;
@@ -41,9 +50,14 @@ after alpha_chars => sub {
 
 	my @alpha_chars_array = split '', $alpha_chars;
 
-	$self->alpha_chars_array_ref(\@alpha_chars_array);
-};
+	$self->alpha_chars_aref(\@alpha_chars_array);
 
+	my $input_char_counts_href = {};
+
+	$input_char_counts_href->{ $_ }++ for @{ $self->alpha_chars_aref };
+
+	$self->input_char_counts_href($input_char_counts_href);
+};
 
 sub BUILD {
 	my $self = shift;
@@ -60,7 +74,7 @@ sub BUILD {
 		push @$words, $_;
 	}
 
-	close $dict_fh;
+	$dict_fh->close;
 
 	$self->dictionary( $words );
 }
@@ -69,15 +83,19 @@ sub build_words {
 	my $self = shift;
 
 	my %words;
-	my $chars_formated = join '|', @{ $self->alpha_chars_array_ref };
 
-	my %input_char_counts;
-	$input_char_counts{ $_ }++ for @{ $self->alpha_chars_array_ref };
+	say Dumper $self->input_char_counts_href;
+
+	my $input_char_counts_href = $self->input_char_counts_href;
+
+	my $allowed_chars = 
+		join '|', keys %$input_char_counts_href;
+
 
 	my $total_tests_passed = 0;
 
-	for my $word ( grep /^($chars_formated)+$/, @{ $self->dictionary } ) {
-		for my $input_char ( @{ $self->alpha_chars_array_ref } ) {
+	for my $word ( grep /^($allowed_chars)+$/, @{ $self->dictionary } ) {
+		for my $input_char ( @{ $self->alpha_chars_aref } ) {
 
 			# if the charactor is not found in the current word 
 			# qualify the test and move on.
@@ -87,16 +105,16 @@ sub build_words {
 			}
 
 			# count the amount of times the charactor is found in the current word.
-			my $input_char_counts = () = $word =~ /$input_char/g;
+			my $input_char_count = () = $word =~ /$input_char/g;
 
 			# if the charactor is found the correct amount of times mark the test as pass.
-			if ($input_char_counts <= $input_char_counts{$input_char}) {
+			if ($input_char_count <= $input_char_counts_href->{$input_char}) {
 				$total_tests_passed++
 			}
 		}
 
 		# Total tests passed must match the length of the input string.
-		if ( $total_tests_passed eq int @{ $self->alpha_chars_array_ref } ) {
+		if ( $total_tests_passed eq int @{ $self->alpha_chars_aref } ) {
 			$words{$word}++;
 		}
 
@@ -108,24 +126,35 @@ sub build_words {
 
 sub build_words2 {
 	my $self = shift;
+	my @words;
+	
+	my $input_char_counts_href = $self->input_char_counts_href;
 
-	my %input_char_counts;
-	$input_char_counts{ $_ }++ for @{ $self->alpha_chars_array_ref };
+	my $allowed_chars = 
+		join '|', keys %$input_char_counts_href;
 
-	my $chars_formated = join '|', map {'(' . $_ . '{1,' . $input_char_counts{$_} . '})' } keys %input_char_counts;
-		
-	say $chars_formated;
+	my $regex_filter;
+	for my $char ( keys %$input_char_counts_href ) {
+		$regex_filter .= qq/
+			^($char)
+			(?=
+				(?!(.*$char){$input_char_counts_href->{$char}})
+		/;
+	
+		for ( keys %$input_char_counts_href ) {
+			next if $_ eq $char;
+			$regex_filter .= "\t\t(?!(.*$_){" . ($input_char_counts_href->{$_}+1) . "})\n"
+		}
 
+		$regex_filter .= qq/
+			)($allowed_chars)+
+		\$
+		|/;
+	}
 
-	my $regex = qr /
-			^(
-				(?'search_char'($chars_formated))
-				(?!.*(\g{search_char}))
-
-			)+$
-	/x;
-
-	my @words = grep /$regex/, @{ $self->dictionary };
+	$regex_filter =~ s/\|$//;
+	
+	@words = grep /$regex_filter/x, @{ $self->dictionary };
 	return @words;
 }
 
