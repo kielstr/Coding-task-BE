@@ -43,6 +43,6 @@ Then you can access it like
                         curl http://localhost:8080/wordfinder2/dgo
 
 
-All query to kielstr@cpan.org.
+All questions to kielstr@cpan.org.
 
 Enjoy!
