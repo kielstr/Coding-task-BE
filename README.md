@@ -38,7 +38,7 @@ Then you can access it like.
                 curl http://localhost:8080/ping
 
 
-        word building is access via 2 calls. 
+        word building is accessed via 2 calls. 
 
                 for version 1 of the code.
                         curl http://localhost:8080/wordfinder/dgo
