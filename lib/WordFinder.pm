@@ -64,7 +64,7 @@ sub BUILD {
 	my $words = $self->dictionary;
 
 	open my $dict_fh, '<', '/usr/share/dict/words' 
-		or croak "failed to open file /usr/share/dict/words $_";
+		or croak "failed to open file /usr/share/dict/words $!";
 
 	while ( defined ( $_ = $dict_fh->getline ) ) {
 		chomp;
