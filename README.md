@@ -1,4 +1,4 @@
-__DockerFile__
+Use the following DockerFile
 
 FROM        perl:latest
 MAINTAINER  Kiel R Stirling kielstr@cpan.org
@@ -16,7 +16,7 @@ WORKDIR Coding-task-BE
 #CMD plackup -R lib -r --port 8080 bin/app.psgi
 CMD plackup -s Starman --workers=10 -p 8080 -a bin/app.psgi
 
-__DockerFile__
+__Building, running and accessing__
 
 
 To build this application execute the following.
