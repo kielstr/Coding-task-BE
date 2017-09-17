@@ -18,4 +18,4 @@ get '/' => sub {
 	return "OK\n";
 };
 
-true;
+1;

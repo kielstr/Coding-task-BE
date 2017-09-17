@@ -34,4 +34,4 @@ get '/wordfinder2/:input' => sub {
 
 
 
-true;
+1;
