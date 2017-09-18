@@ -13,11 +13,11 @@ ARG CACHE_DATE=2016-01-02
 
 RUN git clone https://github.com/kielstr/Coding-task-BE.git
 
-EXPOSE 8080
+EXPOSE 80
 
 WORKDIR Coding-task-BE
 
-CMD plackup -s Starman --workers=10 -p 8080 -a bin/app.psgi
+CMD plackup -s Starman --workers=10 -p 80 -a bin/app.psgi
 
 
 __Building, running and accessing.__
