@@ -1,6 +1,9 @@
 use strict;
 use warnings;
 
+use FindBin qw($RealBin);
+use lib "$RealBin/../lib";
+
 use coding_task_BE;
 use Test::More tests => 2;
 use Plack::Test;
