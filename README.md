@@ -22,6 +22,11 @@ CMD plackup -s Starman --workers=10 -p 80 -a bin/app.psgi
 
 __Building, running and accessing.__
 
+__From the cloud__
+
+        docker run -d -p 8080:80 kielstr/coding_task_be
+
+__Building__
 
 To build this application execute the following.
 
@@ -29,7 +34,7 @@ To build this application execute the following.
 
 Then to run it run.
 
-        docker run -p 8080:8080 coding_task_be
+        docker run -d -p 8080:80 coding_task_be
 
 Then you can access it like. 
 
