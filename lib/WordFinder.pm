@@ -8,7 +8,12 @@ use Moo;
 use Carp;
 use Data::Dumper qw(Dumper);
 
-our $VERSION = '0.2';
+# Location of the words file. 
+# Quick way to get one is apt-get update && apt-get -y install wamerican;
+
+use constant DICT_FILE => '/usr/share/dict/words';
+
+our $VERSION = '1';
 
 # Store for the list of words.
 has dictionary_aref => ( 
@@ -69,12 +74,11 @@ after alpha_chars => sub {
 # Read in the words and build the dictionary array_ref.
 sub BUILD {
 	my $self = shift;
-	# Parse file
 
 	my $words_aref = $self->dictionary_aref;
 
-	open my $dict_fh, '<', '/usr/share/dict/words' 
-		or croak "failed to open file /usr/share/dict/words $!";
+	open my $dict_fh, '<', DICT_FILE 
+		or croak 'failed to open file ' . DICT_FILE . " $!";
 
 	while ( defined ( $_ = $dict_fh->getline ) ) {
 		chomp;
@@ -114,7 +118,7 @@ sub build_words {
 
 			# if the character is not found in the current word 
 			# qualify the test and move on.
-			unless ($word =~ /$input_char/ ) {
+			unless ( $word =~ /$input_char/ ) {
 				$total_tests_passed++;
 				next;
 			}
@@ -123,7 +127,7 @@ sub build_words {
 			my $input_char_count = () = $word =~ /$input_char/g;
 
 			# if the character is found the correct amount of times mark the test as pass.
-			if ($input_char_count <= $input_char_counts_href->{$input_char}) {
+			if ( $input_char_count <= $input_char_counts_href->{$input_char} ) {
 				$total_tests_passed++
 			}
 		}

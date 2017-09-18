@@ -1,7 +1,7 @@
 package coding_task_BE;
 use Dancer2;
 
-our $VERSION = '0.2';
+our $VERSION = '1';
 
 # Package to handle returning the plain text 'OK\n'
 # detailed https://github.com/strategicdata/recruitment/wiki/Coding-task---BE

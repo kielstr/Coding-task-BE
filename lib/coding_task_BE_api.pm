@@ -1,8 +1,9 @@
 package coding_task_BE_api;
 use Dancer2;
-
 use WordFinder;
 my $wordfinder = new WordFinder;
+
+our $VERSION = '1';
 
 set serializer => 'JSON';
 
@@ -21,7 +22,7 @@ get '/wordfinder/:input' => sub {
 
 	# check the input is valid and error or move on.
 	unless ( $wordfinder->valid_str($input) ) {
-		return {status => 'failed', error => 'Invalid input characters [a-z]' }
+		return {status => 'failed', error => 'Invalid input characters ^[a-z]$' }
 	}
 
 	# tell the application what characters where are using.
@@ -41,7 +42,7 @@ get '/wordfinder2/:input' => sub {
 
 	# check the input is valid and error or move on.
 	unless ( $wordfinder->valid_str($input) ) {
-		return {status => 'failed', error => 'Invalid input characters [a-z]' }
+		return {status => 'failed', error => 'Invalid input characters ^[a-z]$' }
 	}
 
 	# tell the application what characters where are using.
