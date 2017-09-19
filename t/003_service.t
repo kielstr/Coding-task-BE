@@ -18,7 +18,7 @@ my $app = coding_task_BE->to_app;
 
 my $test = Plack::Test->create($app);
 
-# Test the service resonds correctly to a ping 
+# Test the service responds correctly to a ping 
 my $request  = HTTP::Request->new( GET => '/' );
 my $response = $test->request($request);
 
@@ -29,7 +29,7 @@ my $app_api = coding_task_BE_api->to_app;
 
 $test = Plack::Test->create($app_api);
 
-# Test the service resonds correctly to a build words request 
+# Test the service responds correctly to a build words request 
 
 $request  = HTTP::Request->new( GET => '/wordfinder/dgo' );
 $response = $test->request($request);
@@ -39,7 +39,7 @@ ok( $response->is_success, '[GET /wordfinder/:input] Successful request' );
 is( ref($content_parsed), "ARRAY", '[GET /wordfinder/:input] Correct content' );
 
 
-# Test the service resonds correctly to a build words version 2 request 
+# Test the service responds correctly to a build words version 2 request 
 $request  = HTTP::Request->new( GET => '/wordfinder2/dgo' );
 $response = $test->request($request);
 
